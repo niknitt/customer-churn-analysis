@@ -1,1 +1,30 @@
+import pandas as pd
+import pickle
+import numpy as np
 
+df = pd.read_csv('telco_final.csv')
+
+# Power BI ke liye clean readable column names
+df['Churn_Label'] = df['Churn'].map({1: 'Churned', 0: 'Retained'})
+
+df['Contract'] = df['Contract'].replace({
+    'Contract_One year' : 'One Year',
+    'Contract_Two year' : 'Two Year'
+})
+
+df['Cluster_Name'] = df['Cluster'].map({
+    0 : 'High Value Loyalists',
+    1 : 'At Risk Customers',
+    2 : 'Budget Stable'
+})
+
+df['tenure_cohort'] = pd.cut(
+    df['tenure'],
+    bins=[0, 12, 24, 36, 48, 60, 72],
+    labels=['0-12', '13-24', '25-36', '37-48', '49-60', '61-72']
+)
+
+# Save
+df.to_csv('powerbi_data.csv', index=False)
+print('Saved powerbi_data.csv')
+print(f'Rows: {len(df)}, Columns: {df.shape[1]}')
